@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace LinqQueryCache
 {
-    sealed class QueryableWrapper<T> : IOrderedQueryable<T>
+    sealed class QueryableWrapper<T> : IOrderedQueryable<T>, IDisposable
     {
         private static readonly ExpressionEqualityComparer _comparer = new ExpressionEqualityComparer();
 
@@ -110,7 +110,7 @@ namespace LinqQueryCache
         public IEnumerator<T> GetEnumerator()
         {
             IEnumerator<T> enumerator;
-            var key = this.GetKey(this._queryable).ToString();
+            var key = this.GetKey(this._queryable);
 
             if (this._cache.TryGetValue(key, out var value) && value is EnumeratorWrapper)
             {
@@ -168,6 +168,15 @@ namespace LinqQueryCache
             }
         }
 
+        #endregion
+
+        #region IDisposable Members
+        public void Dispose()
+        {
+            var key = this.GetKey(this._queryable);
+
+            this._cache.Remove(key);
+        }
         #endregion
 
         #region Private methods
