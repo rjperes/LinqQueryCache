@@ -11,6 +11,15 @@ namespace LinqQueryCache
             return (queryable as IInfrastructure<IServiceProvider>)?.GetService<IMemoryCache>() ?? QueryCache.Default;
         }
 
+        public static IQueryable<T> AsCacheable<T>(this IQueryable<T> queryable) where T : class
+        {
+            var cache = GetCache<T>(queryable);
+
+            var cachedQuery = new QueryableWrapper<T>(cache, queryable);
+
+            return cachedQuery;
+        }
+
         public static IQueryable<T> AsCacheable<T>(this IQueryable<T> queryable, TimeSpan duration) where T : class
         {
             return AsCacheable(queryable, (int)duration.TotalSeconds);

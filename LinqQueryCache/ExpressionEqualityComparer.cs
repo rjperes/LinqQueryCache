@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -110,9 +111,18 @@ namespace LinqQueryCache
                     this.VisitTypeIs((TypeBinaryExpression)expression);
                     break;
 
+                case ExpressionType.Extension:
+                    this.VisitEntityQueryRoot((EntityQueryRootExpression)expression);
+                    break;
+
                 default:
                     throw new ArgumentException($"Unhandled expression type: {expression.NodeType}");
             }
+        }
+
+        private void VisitEntityQueryRoot(EntityQueryRootExpression expression)
+        {
+            this._hashCode ^= expression.Type.GetHashCode();
         }
 
         private void VisitUnary(UnaryExpression expression)

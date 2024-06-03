@@ -97,7 +97,7 @@ namespace LinqQueryCache
         #endregion
 
         #region Internal constructor
-        internal QueryableWrapper(IMemoryCache cache, IQueryable<T> queryable, int durationSeconds)
+        internal QueryableWrapper(IMemoryCache cache, IQueryable<T> queryable, int durationSeconds = -1)
         {
             this._cache = cache;
             this._queryable = queryable;
@@ -112,20 +112,24 @@ namespace LinqQueryCache
             IEnumerator<T> enumerator;
             var key = this.GetKey(this._queryable);
 
-            if (this._cache.TryGetValue(key, out var value) && value is EnumeratorWrapper)
+            if (this._cache.TryGetValue(key, out var value) && (value is EnumeratorWrapper wrapper))
             {
                 //hit
-                enumerator = (EnumeratorWrapper)value!;
-                if (((EnumeratorWrapper)enumerator)._consumed)
+                enumerator = wrapper;
+                if (wrapper._consumed)
                 {
-                    return ((EnumeratorWrapper)enumerator).FromCache();
+                    return wrapper.FromCache();
                 }
             }
             else
             {
                 //miss
                 enumerator = new EnumeratorWrapper(this, this._queryable.GetEnumerator());
-                this._cache.Set(key, enumerator, DateTimeOffset.Now.AddSeconds(this._durationSeconds));
+                if (this._durationSeconds > 0)
+                {
+                    //do not store, only return from cache if it's there
+                    this._cache.Set(key, enumerator, DateTimeOffset.Now.AddSeconds(this._durationSeconds));
+                }
             }
 
             return enumerator;
