@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqQueryCache", "LinqQueryCache\LinqQueryCache.csproj", "{7356B99A-5C99-4582-9A28-03B96CC0EBAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqQueryCache.Test", "LinqQueryCache.Test\LinqQueryCache.Test.csproj", "{9276D32A-4459-49FA-8EB8-0569C112BDA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7356B99A-5C99-4582-9A28-03B96CC0EBAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7356B99A-5C99-4582-9A28-03B96CC0EBAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7356B99A-5C99-4582-9A28-03B96CC0EBAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7356B99A-5C99-4582-9A28-03B96CC0EBAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9276D32A-4459-49FA-8EB8-0569C112BDA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9276D32A-4459-49FA-8EB8-0569C112BDA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9276D32A-4459-49FA-8EB8-0569C112BDA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9276D32A-4459-49FA-8EB8-0569C112BDA5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9D5FA6D3-5803-4788-A5E3-56769D4D1A34}
+	EndGlobalSection
+EndGlobal
