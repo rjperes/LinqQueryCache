@@ -115,6 +115,7 @@ namespace LinqQueryCache
             if (this._cache.TryGetValue(key, out var value) && (value is EnumeratorWrapper wrapper))
             {
                 //hit
+                QueryCache.RaiseHit(this._queryable);
                 enumerator = wrapper;
                 if (wrapper._consumed)
                 {
@@ -124,6 +125,7 @@ namespace LinqQueryCache
             else
             {
                 //miss
+                QueryCache.RaiseMiss(this._queryable);
                 enumerator = new EnumeratorWrapper(this, this._queryable.GetEnumerator());
                 if (this._durationSeconds > 0)
                 {

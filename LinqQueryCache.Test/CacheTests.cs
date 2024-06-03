@@ -17,7 +17,7 @@ namespace LinqQueryCache.Test
 
             var blogs1 = ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromSeconds(10)).ToList();
 
-            var blogs2 = ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromSeconds(10)).ToList();
+            var blogs2 = ctx.Blogs.Where(x => x.Url != null).AsCacheable().ToList();
         }
 
         [Fact]
