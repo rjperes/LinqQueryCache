@@ -19,12 +19,12 @@ namespace LinqQueryCache
         /// </summary>
         public static event Action<IQueryable>? Miss;
 
-        internal static void RaiseHit<T>(IQueryable<T> queryable)
+        internal static void RaiseHit(IQueryable queryable)
         {
             Hit?.Invoke(queryable);
         }
 
-        internal static void RaiseMiss<T>(IQueryable<T> queryable)
+        internal static void RaiseMiss(IQueryable queryable)
         {
             Miss?.Invoke(queryable);
         }

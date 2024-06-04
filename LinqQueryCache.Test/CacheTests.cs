@@ -1,5 +1,5 @@
 ﻿using LinqQueryCache.Test.Model;
-using LinqQueryCache;
+using Microsoft.EntityFrameworkCore;
 
 namespace LinqQueryCache.Test
 {
@@ -11,13 +11,32 @@ namespace LinqQueryCache.Test
         }
 
         [Fact]
+        public void CanGetSql()
+        {
+            using var ctx = GetContext();
+
+            ctx.Blogs.Where(x => x.Creation < DateTime.Today).AsCacheable(TimeSpan.FromSeconds(10));
+
+            var sql = ctx.Blogs.Where(x => x.Creation < DateTime.Today).AsCacheable().ToQueryString();
+
+            Assert.NotNull(sql);
+            Assert.NotEmpty(sql);
+        }
+
+        [Fact]
         public void CanHit()
         {
             using var ctx = GetContext();
 
-            var blogs1 = ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromSeconds(10)).ToList();
+            var hit = false;
 
-            var blogs2 = ctx.Blogs.Where(x => x.Url != null).AsCacheable().ToList();
+            QueryCache.Hit += (q) => hit = true;
+
+            ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromSeconds(10)).ToList();
+
+            ctx.Blogs.Where(x => x.Url != null).AsCacheable().ToList();
+
+            Assert.True(hit);
         }
 
         [Fact]
@@ -25,11 +44,17 @@ namespace LinqQueryCache.Test
         {
             using var ctx = GetContext();
 
-            var blogs1 = ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromSeconds(10)).ToList();
+            var missed = false;
+
+            QueryCache.Miss += (q) => missed = true;
+
+            ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromSeconds(10)).ToList();
 
             Thread.Sleep(15 * 1000);
 
-            var blogs2 = ctx.Blogs.Where(x => x.Url != null).AsCacheable().ToList();
+            ctx.Blogs.Where(x => x.Url != null).AsCacheable().ToList();
+
+            Assert.True(missed);
         }
 
         [Fact]
@@ -37,11 +62,17 @@ namespace LinqQueryCache.Test
         {
             using var ctx = GetContext();
 
-            var blogs1 = ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromMinutes(10));
+            var missed = false;
 
-            (blogs1 as IDisposable)!.Dispose();
+            QueryCache.Miss += (q) => missed = true;
 
-            var blogs2 = ctx.Blogs.Where(x => x.Url != null).AsCacheable().ToList();
+            var blogs = ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromMinutes(10));
+
+            (blogs as IDisposable)!.Dispose();
+
+            ctx.Blogs.Where(x => x.Url != null).AsCacheable().ToList();
+
+            Assert.True(missed);
         }
     }
 }

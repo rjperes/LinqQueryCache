@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace LinqQueryCache.Test.Model
 {
@@ -15,6 +16,7 @@ namespace LinqQueryCache.Test.Model
         private static DbContextOptions GetOptions(string connectionString)
         {
             var builder = new DbContextOptionsBuilder()
+                .LogTo(x => Debugger.Log(0, "", x))
                 .UseSqlServer(connectionString);
 
             return builder.Options;
