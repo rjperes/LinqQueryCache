@@ -28,13 +28,13 @@ namespace LinqQueryCache.Test
         {
             using var ctx = GetContext();
 
-            var hit = false;
-
-            QueryCache.Hit += (q) => hit = true;
+            QueryCache.Reset();
 
             ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromSeconds(10)).ToList();
 
             ctx.Blogs.Where(x => x.Url != null).AsCacheable().ToList();
+
+            var hit = QueryCache.Hits == 1;
 
             Assert.True(hit);
         }
@@ -44,15 +44,15 @@ namespace LinqQueryCache.Test
         {
             using var ctx = GetContext();
 
-            var missed = false;
-
-            QueryCache.Miss += (q) => missed = true;
+            QueryCache.Reset();
 
             ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromSeconds(10)).ToList();
 
             Thread.Sleep(15 * 1000);
 
             ctx.Blogs.Where(x => x.Url != null).AsCacheable().ToList();
+
+            var missed = QueryCache.Misses == 1;
 
             Assert.True(missed);
         }
@@ -62,15 +62,15 @@ namespace LinqQueryCache.Test
         {
             using var ctx = GetContext();
 
-            var missed = false;
-
-            QueryCache.Miss += (q) => missed = true;
+            QueryCache.Reset();
 
             var blogs = ctx.Blogs.Where(x => x.Url != null).AsCacheable(TimeSpan.FromMinutes(10));
 
             (blogs as IDisposable)!.Dispose();
 
             ctx.Blogs.Where(x => x.Url != null).AsCacheable().ToList();
+
+            var missed = QueryCache.Misses == 1;
 
             Assert.True(missed);
         }

@@ -5,6 +5,9 @@ namespace LinqQueryCache
 {
     public static class QueryCache
     {
+        private static volatile int _hits;
+        private static volatile int _misses;
+
         /// <summary>
         /// The cache to use.
         /// </summary>
@@ -13,20 +16,25 @@ namespace LinqQueryCache
         /// <summary>
         /// Raised when the cache is hit.
         /// </summary>
-        public static event Action<IQueryable>? Hit;
+        public static int Hits { get; }
         /// <summary>
         /// Raised when the cache is missed.
         /// </summary>
-        public static event Action<IQueryable>? Miss;
+        public static int Misses { get; }
 
-        internal static void RaiseHit(IQueryable queryable)
+        public static void Reset()
         {
-            Hit?.Invoke(queryable);
+            _hits = _misses = 0;
         }
 
-        internal static void RaiseMiss(IQueryable queryable)
+        internal static void RaiseHit()
         {
-            Miss?.Invoke(queryable);
+            Interlocked.Increment(ref _hits);
+        }
+
+        internal static void RaiseMiss()
+        {
+            Interlocked.Increment(ref _misses);
         }
     }
 }
