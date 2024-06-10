@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -112,7 +111,7 @@ namespace LinqQueryCache
                     break;
 
                 case ExpressionType.Extension:
-                    this.VisitEntityQueryRoot((EntityQueryRootExpression)expression);
+                    this.VisitEntityQueryRoot(expression);
                     break;
 
                 default:
@@ -120,7 +119,7 @@ namespace LinqQueryCache
             }
         }
 
-        private void VisitEntityQueryRoot(EntityQueryRootExpression expression)
+        private void VisitEntityQueryRoot(Expression expression)
         {
             this._hashCode ^= expression.Type.GetHashCode();
         }

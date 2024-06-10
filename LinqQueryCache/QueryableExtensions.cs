@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 namespace LinqQueryCache
 {
@@ -8,7 +6,7 @@ namespace LinqQueryCache
     {
         private static IMemoryCache GetCache<T>(this IQueryable<T> queryable) where T : class
         {
-            return (queryable as IInfrastructure<IServiceProvider>)?.GetService<IMemoryCache>() ?? QueryCache.Default;
+            return QueryCache.Default;
         }
 
         /// <summary>
@@ -44,7 +42,7 @@ namespace LinqQueryCache
         public static IQueryable<T> AsCacheable<T>(this IQueryable<T> queryable, TimeSpan duration) where T : class
         {
             ArgumentNullException.ThrowIfNull(queryable, nameof(queryable));
-         
+
             return AsCacheable(queryable, (int)duration.TotalSeconds);
         }
 

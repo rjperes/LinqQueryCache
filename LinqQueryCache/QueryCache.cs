@@ -5,8 +5,7 @@ namespace LinqQueryCache
 {
     public static class QueryCache
     {
-        private static volatile int _hits;
-        private static volatile int _misses;
+        private static readonly object _lock = new object();
 
         /// <summary>
         /// The cache to use.
@@ -16,25 +15,34 @@ namespace LinqQueryCache
         /// <summary>
         /// Raised when the cache is hit.
         /// </summary>
-        public static int Hits { get; }
+        public static int Hits { get; private set; }
         /// <summary>
         /// Raised when the cache is missed.
         /// </summary>
-        public static int Misses { get; }
+        public static int Misses { get; private set; }
 
         public static void Reset()
         {
-            _hits = _misses = 0;
+            lock (_lock)
+            {
+                Hits = Misses = 0;
+            }
         }
 
         internal static void RaiseHit()
         {
-            Interlocked.Increment(ref _hits);
+            lock (_lock)
+            {
+                Hits++;
+            }
         }
 
         internal static void RaiseMiss()
         {
-            Interlocked.Increment(ref _misses);
+            lock (_lock)
+            {
+                Misses++;
+            }
         }
     }
 }

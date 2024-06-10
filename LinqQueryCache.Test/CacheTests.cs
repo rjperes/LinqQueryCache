@@ -24,6 +24,20 @@ namespace LinqQueryCache.Test
         }
 
         [Fact]
+        public void CanCacheEntitySet()
+        {
+            using var ctx = GetContext();
+
+            QueryCache.Reset();
+
+            ctx.Blogs.AsCacheable(TimeSpan.FromMinutes(10)).ToList();
+
+            ctx.Blogs.AsCacheable().ToList();
+
+            Assert.Equal(1, QueryCache.Hits);
+        }
+
+        [Fact]
         public void CanHit()
         {
             using var ctx = GetContext();
