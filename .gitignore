@@ -8,3 +8,4 @@
 /LinqQueryCache/obj
 /LinqQueryCache.Test/bin
 /LinqQueryCache.Test/obj
+/LinqQueryCache/publish_nuget.bat
